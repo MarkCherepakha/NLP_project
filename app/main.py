@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.api.api import app
 from app.api.api import api_router
 from app.api.heartbeat import heartbeat_router
 from app.core.config import settings
