@@ -21,8 +21,9 @@ class SimilarityRequest(BaseModel):
     line2: str
 
 app = FastAPI()
+api_router = APIRouter()
 
-@app.post("/similarity")
+@api_router.post("/similarity")
 def calculate_similarity(request: SimilarityRequest) -> Dict[str, str]:
     method = request.method
     line1 = request.line1
@@ -41,12 +42,8 @@ def calculate_similarity(request: SimilarityRequest) -> Dict[str, str]:
         "method": method,
         "line1": line1,
         "line2": line2,
-        "similarity": similarity
+        "similarity": str(similarity)
     }
-
-
-api_router = APIRouter()
-
 
 @api_router.post("/predict", response_model=PredictResponse)
 async def predict(request: Request, payload: PredictRequest) -> Any:
