@@ -11,6 +11,11 @@ I wrote a blog post about this repository in Japanese.
 $ sh run.sh
 ```
 
+spacy
+```sh
+python -m spacy download en_core_web_sm
+```
+
 ```sh
 $ poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 9000
 ```
@@ -29,7 +34,7 @@ $ docker compose up --build
 
 ## Request Commands
 
-```sh 
+```sh
 $ curl --request POST --url http://127.0.0.1:9000/api/v1/predict --header 'Content-Type: application/json' --data '{"input_text": "test"}'
 ```
 

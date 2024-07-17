@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
 from app.models.predict import PredictRequest, PredictResponse
-from app.api.text_preprocessing import text_preprocessing
+from nlp_utils.preprocessing.text_preprocessing import text_preprocessing
 
 from enum import Enum
 from pydantic import BaseModel
@@ -56,10 +56,10 @@ def train_model(background_tasks: BackgroundTasks):
         model.fit(train_texts, train_labels)
 
         joblib.dump(model, 'model.joblib')
-    
+
     background_tasks.add_task(train)
     return {"message": "Training started in the background"}
-    
+
 class SimilarityMethod(str, Enum):
     levenshtein = "levenshtein"
     jaccard = "jaccard"

@@ -54,7 +54,7 @@ def text_preprocessing(text):
 
     sia = SentimentIntensityAnalyzer()
     scores = sia.polarity_scores(text_removed_from_rare_words)
-    
+
     return {
         'standardized_text': standardized_text,
         'punctuated_text': punctuated_text,
@@ -74,3 +74,5 @@ text = """Inulinases are used for the production of high-fructose syrup and fruc
 preprocessed_data = text_preprocessing(text)
 for key, value in preprocessed_data.items():
     print(f"{key}: {value}\n")
+
+print("WARNING: You shouldn't see this message if you try to import this module")
