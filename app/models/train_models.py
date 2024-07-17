@@ -9,7 +9,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 import joblib
 
-from nlp_utils.preprocessing.text_preprocessing import text_preprocessing
+from preprocessing.text_preprocessing import text_preprocessing
 
 def train():
     dataset = load_dataset('imdb')

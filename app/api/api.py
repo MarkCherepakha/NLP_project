@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
 from app.models.predict import PredictRequest, PredictResponse
-from nlp_utils.preprocessing.text_preprocessing import text_preprocessing
+from app.preprocessing.text_preprocessing import text_preprocessing
 
 from enum import Enum
 from pydantic import BaseModel
@@ -13,7 +13,7 @@ from typing import Dict
 
 import joblib
 
-model = joblib.load('model.joblib')
+# model = joblib.load('model.joblib')
 app = FastAPI()
 api_router = APIRouter()
 
