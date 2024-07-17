@@ -2,8 +2,8 @@ from typing import Any
 
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
-from app.models.predict import PredictRequest, PredictResponse
-from nlp_utils.preprocessing.text_preprocessing import text_preprocessing
+from models.predict import PredictRequest, PredictResponse
+from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing
 
 from enum import Enum
 from pydantic import BaseModel
@@ -41,7 +41,7 @@ def train_model(background_tasks: BackgroundTasks):
         from sklearn.naive_bayes import MultinomialNB
         from sklearn.pipeline import make_pipeline
 
-        from app.api.text_preprocessing import preprocess_text
+        from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing
 
         dataset = load_dataset('imdb')
         train_texts = dataset['train']['text']
@@ -49,8 +49,8 @@ def train_model(background_tasks: BackgroundTasks):
         test_texts = dataset['test']['text']
         test_labels = dataset['test']['label']
 
-        train_texts = [preprocess_text(text) for text in train_texts]
-        test_texts = [preprocess_text(text) for text in test_texts]
+        train_texts = [text_preprocessing(text) for text in train_texts]
+        test_texts = [text_preprocessing(text) for text in test_texts]
 
         model = make_pipeline(TfidfVectorizer(), MultinomialNB())
         model.fit(train_texts, train_labels)

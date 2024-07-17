@@ -2,13 +2,16 @@ import re
 import nltk
 import spacy
 import pandas as pd
+import joblib
 from collections import Counter
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from utils.nltk_resources import download_nltk_resources
 
 def text_preprocessing(text):
+    download_nltk_resources()
     nltk.download('punkt')
     nltk.download('averaged_perceptron_tagger')
     nltk.download('maxent_ne_chunker')
@@ -54,6 +57,12 @@ def text_preprocessing(text):
 
     sia = SentimentIntensityAnalyzer()
     scores = sia.polarity_scores(text_removed_from_rare_words)
+
+    if __name__ == "__main__":
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        nltk.download('wordnet')
+        print(text_preprocessing(text))
 
     return {
         'standardized_text': standardized_text,
