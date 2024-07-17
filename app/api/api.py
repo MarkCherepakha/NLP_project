@@ -4,6 +4,8 @@ from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
 from models.predict import PredictRequest, PredictResponse
 from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing
+from models.predict import PredictRequest, PredictResponse
+from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing
 
 from enum import Enum
 from pydantic import BaseModel
