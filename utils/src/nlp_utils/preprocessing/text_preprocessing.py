@@ -8,10 +8,11 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from utils.nltk_resources import download_nltk_resources
 
 
 def text_preprocessing(text):
-
+    download_nltk_resources()
     nltk.download('punkt')
     nltk.download('averaged_perceptron_tagger')
     nltk.download('maxent_ne_chunker')
