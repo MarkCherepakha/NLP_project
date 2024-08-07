@@ -2,7 +2,7 @@ from typing import Any
 
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
-from models.predict import PredictRequest, PredictResponse
+from models.model import PredictRequest, PredictResponse
 from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing
 
 from enum import Enum
