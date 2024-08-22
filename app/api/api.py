@@ -3,14 +3,14 @@ from typing import Any
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
 from models.model import PredictRequest, PredictResponse
-from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing
+from utils.src.nlp_utils.preprocessing.text_preprocessing import text_preprocessing, spacy_preprocessing
 
 from enum import Enum
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 import textdistance
 from typing import Dict
-
+from flask import Flask, request, jsonify
 import joblib
 
 model = joblib.load('model.joblib')
@@ -23,6 +23,24 @@ class TextClassificationRequest(BaseModel):
 class TextClassificationResponse(BaseModel):
     text: str
     label: int
+
+app = Flask(__name__)
+
+@app.route('/preprocess', methods=['POST'])
+def preprocess_text():
+    data = request.json
+    text = data.get('text')
+    method = data.get('method', 'nltk')  # По умолчанию используем NLTK
+
+    if method == 'spacy':
+        result = spacy_preprocessing(text)
+    else:
+        result = text_preprocessing(text)
+
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 @api_router.post("/classify", response_model=TextClassificationResponse)
 def classify_text(request: TextClassificationRequest):

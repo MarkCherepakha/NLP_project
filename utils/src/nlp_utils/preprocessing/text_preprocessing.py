@@ -11,20 +11,13 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from utils.nltk_resources import download_nltk_resources
 
 
+download_nltk_resources()
+
+nlp = spacy.load('en_core_web_sm')
+
 def text_preprocessing(text):
-    download_nltk_resources()
-    nltk.download('punkt')
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download('maxent_ne_chunker')
-    nltk.download('words')
-    nltk.download('wordnet', quiet=True)
-    nltk.download('omw-1.4', quiet=True)
-    nltk.download('vader_lexicon', quiet=True)
-
     standardized_text = text.lower()
-
     punctuated_text = re.sub(r'[^\w\s]', '', standardized_text)
-
     text_numbers_removed = re.sub(r'\d', '', punctuated_text)
 
     def remove_rare_words(text, threshold=5):
@@ -37,10 +30,6 @@ def text_preprocessing(text):
 
     tokens = word_tokenize(text_removed_from_rare_words)
 
-    nlp = spacy.load('en_core_web_sm')
-    doc = nlp(text_removed_from_rare_words)
-    tokens_spacy = [token.text for token in doc]
-
     stop_words = set(stopwords.words('english'))
     filtered_tokens = [token for token in tokens if token not in stop_words]
 
@@ -48,8 +37,7 @@ def text_preprocessing(text):
     stemmed_tokens = [stemmer.stem(token) for token in filtered_tokens]
 
     sentence = " ".join(filtered_tokens)
-    doc = nlp(sentence)
-    lemmatized_tokens = [token.lemma_ for token in doc]
+    lemmatized_tokens = [nlp(token)[0].lemma_ for token in filtered_tokens]
 
     pos_tag_tokens = word_tokenize(text_removed_from_rare_words)
     tags = nltk.pos_tag(pos_tag_tokens)
@@ -59,23 +47,45 @@ def text_preprocessing(text):
     sia = SentimentIntensityAnalyzer()
     scores = sia.polarity_scores(text_removed_from_rare_words)
 
-    if __name__ == "__main__":
-        nltk.download('punkt')
-        nltk.download('stopwords')
-        nltk.download('wordnet')
-        print(text_preprocessing(text))
-
     return {
         'standardized_text': standardized_text,
         'punctuated_text': punctuated_text,
         'text_numbers_removed': text_numbers_removed,
         'text_removed_from_rare_words': text_removed_from_rare_words,
         'tokens': tokens,
-        'tokens_spacy': tokens_spacy,
         'filtered_tokens': filtered_tokens,
         'stemmed_tokens': stemmed_tokens,
         'lemmatized_tokens': lemmatized_tokens,
         'pos_tags': df,
+        'sentiment_scores': scores
+    }
+
+def spacy_preprocessing(text):
+    doc = nlp(text)
+
+    standardized_text = text.lower()
+
+    punctuated_text = re.sub(r'[^\w\s]', '', standardized_text)
+    text_numbers_removed = re.sub(r'\d', '', punctuated_text)
+
+    words = [token.text for token in doc if token.is_alpha]
+    word_freq = Counter(words)
+    filtered_words = [word for word in words if word_freq[word] >= 2]
+    text_removed_from_rare_words = ' '.join(filtered_words)
+
+    tokens = [token.text for token in doc]
+    filtered_tokens = [token.text for token in doc if not token.is_stop]
+    lemmatized_tokens = [token.lemma_ for token in doc]
+    pos_tags = [(token.text, token.pos_) for token in doc]
+
+    sia = SentimentIntensityAnalyzer()
+    scores = sia.polarity_scores(text_removed_from_rare_words)
+
+    return {
+        'tokens': tokens,
+        'filtered_tokens': filtered_tokens,
+        'lemmatized_tokens': lemmatized_tokens,
+        'pos_tags': pos_tags,
         'sentiment_scores': scores
     }
 
