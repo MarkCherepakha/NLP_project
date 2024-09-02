@@ -1,4 +1,5 @@
 from typing import Any
+import spacy
 
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 
@@ -12,6 +13,7 @@ import textdistance
 from typing import Dict
 from flask import Flask, request, jsonify
 import joblib
+from spacy.language import Language
 
 model = joblib.load('model.joblib')
 app = FastAPI()
@@ -24,13 +26,22 @@ class TextClassificationResponse(BaseModel):
     text: str
     label: int
 
+#Custom_transformer
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe("custom_component", last=True)
+
+@Language.component("custom_component")
+def custom_component(doc):
+    doc.user_data["custom_data"] = "New data"
+    return doc
+
 app = Flask(__name__)
 
 @app.route('/preprocess', methods=['POST'])
 def preprocess_text():
     data = request.json
     text = data.get('text')
-    method = data.get('method', 'nltk')  # По умолчанию используем NLTK
+    method = data.get('method', 'nltk') 
 
     if method == 'spacy':
         result = spacy_preprocessing(text)
